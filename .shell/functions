@@ -1,0 +1,168 @@
+# !/usr/bin/env bash
+# Author: <mvdw at airmail dot cc>
+# Description:
+#   $ join_head [delimiter] ...
+#   $ join_tail [delimiter] ...
+#   $ join_body [delimiter] ...
+#   $ join_wrap [left] [right] ...
+#   Join all the arguments beyond the delimiter with the delimiter.
+#
+#   Examples:
+#       $ join_tail __ a b c            #=> a__b__c__
+#       $ join_tail / var log           #=> var/log/
+#       $ join_head __ a b c            #=> __a__b__c
+#       $ join_head / var log           #=> /var/log
+#       $ join_body __ a b c            #=> a__b__c
+#       $ join_body / var log           #=> var/log
+#       $ join_wrap _ - a b c           #=> _a-_b-_c-
+#       $ join_wrap '(' ')' var log     #=> (var)(log)
+#
+#   $ timestamp
+#   Generate a readable timestamp format for the current time.
+#
+#   Examples:
+#       $ timestamp                     #=> 2017-03-14 17:53
+#
+#
+#   $ clip
+#   Strip any line breaks from stdin and send it to the assigned clipboard application
+#
+#   Examples:
+#       $ echo "Hello world!" | clip    #=> 0
+#       $ clip <<< "Hello world!"       #=> 0
+#
+#   $ intercept
+#   Intercept a stream (stdin) and send this to multiple processes.
+#
+#   Examples:
+#       $ echo "?" | intercept "cat"    #=> "?\n?"
+#       $ intercept "cat" <<< "Hello"   #=> "Hello\nHello"
+#       $ intercept \
+#           "sed 's/e/a' 1>&3" \
+#               <<< "Bye" \
+#           3>&1                        #=> "Bye\nBya"
+#
+#   $ ix [file]
+#   Send a stream of text or upload a file to http://ix.io.
+#   It optionally reads a .netrc file from ~, the format for this can be found
+#   on the curl manual under 'netrc'.
+#
+#   Examples:
+#       $ echo "Hello world!" | ix      #=> http://ix.io/...
+#       $ ix <<< "Hello world!"         #=> http://ix.io/...
+#       $ ix hello.c                    #=> http://ix.io/...
+#
+#   $ up [file] [host]
+#   Uploads a file to the specified host, optionally omit the host to use a set default.
+#
+#   Examples:
+#       $ up hello.c                    #=> "{\"url\": https://pste.pw/...
+#       $ up hello.c pste               #=> "{\"url\": https://pste.pw/...
+#
+#   $ address [in|out] [interface]
+#   Display your internal or external ip address.
+#
+#   Examples:
+#       $ address -in en0               #=> 192.168...
+#       $ address -in                   #=> 192.168...
+#       $ address -out                  #=> 109.201...
+#
+#   $ secret [length] [characters]
+#   Generate a password/key/token by reading from /dev/urandom.
+#
+#   Examples
+#       $ secret 64                     #=> [evUIBqPq4io5>X/ohCjRC[eJHu:}n>Xa|YTpH`:W@y3y+}X,R0X)hb*nFQ38]KC
+#       $ secret 32 _-,.~\'\`           #=> `'',~-,_~,,~,.`_`_.'`~-,,_-','-~
+#       $ secret 6 [0-9][A-F]           #=> F2E476
+
+function join_tail { printf "%s$1" "${@:2}" && echo; }
+function join_head { printf "$1%s" "${@:2}" && echo; }
+function join_body { _join:head "$@" | cut -c $((${#1} + 1))-; }
+function join_wrap { printf "$1%s$2" "${@:3}" && echo; }
+
+function timestamp {
+    date +"%F %H:%M"
+}
+
+function clip {
+    tr -d "\n" | case $(uname) in
+        Linux)    xclip -selection CLIPBOARD ;;
+        Darwin|*) pbcopy ;;
+    esac
+}
+
+function intercept {
+    # This is down for a rewrite for sure, wanted a working example for now though.
+    eval "tee $(join_wrap ">(" ") " "$@")"
+}
+
+function ix {
+    if [[ -n "$1" ]]; then
+        body="$(< "$1")"
+    else
+        body="$(cat)"
+    fi
+    if [[ $(wc -c <<< "$body" | sed 's/^ *//') -gt 0 ]]; then
+        curl -\# --netrc-optional -F 'f:=<-' ix.io <<< "$body" | intercept "clip"
+    fi
+    unset body
+}
+
+function up {
+    case "$2" in
+        uguu|se)
+            curl -\# \
+                -F file=@"${1:-}" \
+                -F name="$(date +"%F_%H:%M:%S")_$RANDOM" \
+            "https://uguu.se/api.php?d=upload-tool" | intercept "clip" && echo ;;
+
+        0x0|st)
+            curl -\# \
+                -F file=@"${1:-}" \
+            "https://0x0.st" | intercept "clip" ;;
+
+        pste|pw|*)
+            curl -\# \
+                -F file=@"${1:-}" \
+                -F key="$(orml HTTP/u.pste.pw/key.gpg)" \
+            "https://pste.pw/api/upload" | jq -r '.url' | intercept "clip" ;;
+    esac
+}
+
+function address {
+    case "$1" in
+        -out) curl 'icanhazip.com' ;;
+        -in)
+            case $(uname) in
+                Linux)
+                    # This $2 is in awk.
+                    ip addr show | awk '/inet.*global/{print $2}' ;;
+                Darwin|*)
+                    ipconfig getifaddr "${2:-en0}" ;;
+            esac ;;
+        *)
+            echo "?" ;;
+    esac
+}
+
+function man {
+    env \
+        LESS_TERMCAP_so="$(printf "\e[1;44;31m")" \
+        LESS_TERMCAP_mb="$(printf "\e[1;31m")" \
+        LESS_TERMCAP_md="$(printf "\e[1;31m")" \
+        LESS_TERMCAP_us="$(printf "\e[1;32m")" \
+        LESS_TERMCAP_me="$(printf "\e[0m")" \
+        LESS_TERMCAP_se="$(printf "\e[0m")" \
+        LESS_TERMCAP_ue="$(printf "\e[0m")" \
+        man "$@"
+}
+
+function secret {
+    LC_CTYPE=C \
+        tr -dc "${2:-"!'\"#$%&()*+,-./:;<=>?@[0-9A-Za-z][\]^_\`{|"}" \
+        < /dev/urandom \
+        | head -c "${1-8}" \
+        | xargs -0
+}
+
+export -f join_head join_body join_tail join_wrap intercept clip up address ix secret man

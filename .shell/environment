@@ -1,0 +1,17 @@
+# !/usr/bin/env bash
+# Author: <mvdw at airmail dot cc>
+
+# Export the user created function names.
+# shellcheck disable=SC2155
+export BASH_FUNCTION_NAMES=$(declare -F | awk '{if (substr($3, 0, 1) != "_") print $3}')
+
+# Display the prompt.
+export PS1='\[\033[34;5;9m\]$(sed "s/~/${HOME//\//\\\/}/g" <<< "\w") ─── \[$(tput sgr0)\]'
+export PS2='> '
+export PS3='\ '
+export PS4='+($?) $BASH_SOURCE:$FUNCNAME:$LINENO:' bash -lixc : 2> >(grep alias)
+
+# A set of commonly used applications saved under their selector name.
+export BROWSER='firefox'
+export EDITOR='vim'
+export LANG='en_GB.UTF-8'

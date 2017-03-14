@@ -1,0 +1,14 @@
+# !/usr/bin/env bash
+# Author: <mvdw at airmail dot cc>
+
+# Directory switching/listing related aliases.
+alias ls='ls -aG'
+alias ll='ls -alhog'
+alias la='ls -a'
+
+# Ask for confirmation whenever we're (re)moving files.
+alias rm='rm -i'
+alias mv='mv -i'
+
+# Have sudo understand aliases.
+alias sudo='sudo '
