@@ -23,7 +23,6 @@
 #   Examples:
 #       $ timestamp                     #=> 2017-03-14 17:53
 #
-#
 #   $ clip
 #   Strip any line breaks from stdin and send it to the assigned clipboard application
 #

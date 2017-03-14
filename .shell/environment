@@ -6,7 +6,7 @@
 export BASH_FUNCTION_NAMES=$(declare -F | awk '{if (substr($3, 0, 1) != "_") print $3}')
 
 # Display the prompt.
-export PS1='\[\033[34;5;9m\]$(sed "s/~/${HOME//\//\\\/}/g" <<< "\w") ─── \[$(tput sgr0)\]'
+export PS1='\[\033[34;5;9m\]$(sed "s/~/${HOME//\//\\\/}/g" <<< "\w") [\h] ─── \[$(tput sgr0)\]'
 export PS2='> '
 export PS3='\ '
 export PS4='+($?) $BASH_SOURCE:$FUNCNAME:$LINENO:' bash -lixc : 2> >(grep alias)
