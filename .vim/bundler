@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+#
+# Minimalistic `package` manager for pathogen.
+
+GIT_BIN=/usr/bin/git
+GIT_URL=https://github.com
+
+HIVE="$HOME/.vim/bundle"
+REPO="$HOME/.vim/bundler.repo"
+
+Main() \
+    (Pre && (Clone && Post || Error) || Error)
+
+# Obtain the repositories whenever they're needed [master].
+Clone() \
+    while read -r REPOSITORY; do
+        NAME=${REPOSITORY##*/}
+        case ${REPOSITORY:0:1} in
+            ""|%)
+                : ;;
+            @)
+                (
+                    command cd $HIVE/$NAME
+                    command $GIT_BIN checkout master
+                    command $GIT_BIN pull
+                ) ;;
+            *)
+                &> /dev/null command $GIT_BIN clone "$GIT_URL/$REPOSITORY" "$HIVE/$NAME"
+
+                # GNU sed notation.
+                # sed -i s|^$REPOSITORY|@$REPOSITORY|" "$REPO"
+
+                # BSD sed notation.
+                sed -i '' "s|^$REPOSITORY|@$REPOSITORY|g" $REPO ;;
+
+        esac
+    done < "$REPO"
+
+Error() {
+    return $?
+}
+
+Post() {
+    command ls -1 "$HIVE"
+}
+
+Pre() {
+    &> /dev/null command mkdir -p "$HIVE"
+    return 0
+}
+
+Main

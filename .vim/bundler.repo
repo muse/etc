@@ -1,0 +1,29 @@
+% vim:ft=prolog
+%
+% All comments are denoted with a '%'.
+% All existing repositories are denoted with a '@'.
+% All new repositories have no denotation.
+
+% Fast and easy `netrw` access.
+@tpope/vim-vinegar
+
+% Git integration.
+@tpope/vim-fugitive
+
+% Automatically place an `end` after a `do`.
+@tpope/vim-endwise
+
+% Automatic quoting and parenthesizing.
+@tpope/vim-surround
+
+% Buffer utilities.
+@ap/vim-buftabline
+
+% Elixir utilities.
+@elixir-lang/vim-elixir
+
+% Asynchronous lint engine
+@w0rp/ale
+
+% Quick comments.
+@tpope/vim-commentary
