@@ -1,0 +1,4 @@
+# We don't need everything from our system.
+.vim/bundle
+.vim/autoload
+.vim/.netrwhist
