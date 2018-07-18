@@ -1,7 +1,7 @@
 # !/usr/bin/env bash
-# Author: <mvdw at airmail dot cc>
+# Email: <mvdw at airmail dot cc>
 
-# Directory switching/listing related aliases.
+# Directory listing related aliases.
 alias ls='ls -aG'
 alias ll='ls -alhog'
 alias la='ls -a'
