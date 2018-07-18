@@ -1,0 +1,10 @@
+# !/usr/bin/env bash
+# Email: <mvdw at airmail dot cc>
+
+# `git show` the latest commit on the current branch.
+function git-show-latest() {
+        git log -1 | \
+           head -1 | \
+     cut '-d ' -f2 | \
+    xargs git show
+}
