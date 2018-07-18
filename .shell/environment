@@ -21,6 +21,7 @@ export PATH=$PATH:$HOME/tck/bin
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/local/sbin/
 export PATH=$PATH:/usr/local/opt/node@8/bin
+export PATH=$PATH:/usr/local/opt/imagemagick@6/bin
 
 # Other.
 export ERL_AFLAGS="-kernel shell_history enabled"
