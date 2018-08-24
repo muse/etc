@@ -31,7 +31,7 @@ Clone() \
                 # sed -i s|^$REPOSITORY|@$REPOSITORY|" "$REPO"
 
                 # BSD sed notation.
-                sed -i '' "s|^$REPOSITORY|@$REPOSITORY|g" $REPO ;;
+                command sed -i '' "s|^$REPOSITORY|@$REPOSITORY|g" $REPO ;;
 
         esac
     done < "$REPO"
