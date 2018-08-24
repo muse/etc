@@ -27,3 +27,9 @@
 
 % Quick comments.
 @tpope/vim-commentary
+
+% Haskell highlighting.
+@neovimhaskell/haskell-vim
+
+% Fuzzy finder.
+@junegunn/fzf.vim
