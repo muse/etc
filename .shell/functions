@@ -149,3 +149,7 @@ ix() {
     fi
     unset BODY
 }
+
+d() {
+    diff -BEby "$1" "$2" | nl | pr | less
+}
