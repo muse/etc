@@ -92,6 +92,9 @@ set hidden
 "" Backspacing.
 set backspace=indent,eol,start
 
+"" Folding
+set foldmethod=marker
+
 " Groups.
 "" Decorating the statusline.
 augroup __stl
@@ -125,7 +128,6 @@ augroup __filtype
     au BufRead,BufNewFile *.conf        setlocal ft=nginx
     au BufRead,BufNewFile *.ini         setlocal ft=dosini
     au BufRead,BufNewFile *.txt         setlocal ft=txt
-    au BufRead,BufNewFile *.tpl         setlocal ft=smarty
     au BufRead,BufNewFile *.sql         setlocal ft=mysql
     au BufRead,BufNewFile *.md          setlocal ft=markdown
     au BufRead,BufNewFile *.cl          setlocal ft=lisp
@@ -136,7 +138,7 @@ augroup __filtype
     au BufRead,BufNewFile *.h           setlocal ft=c
 
     " Whenever we need a tabwith of 2.
-    au BufRead,BufNewFile *.vim,*.hs,*.l,*.es6,*.scss,*.scm,*.rb,*.html,*.erb,*.js,*.css,*.cl,*.lsp,*.lisp set tabstop=4 softtabstop=0 shiftwidth=2
+    au BufRead,BufNewFile *.vim,*.hs,*.l,*.es6,*.scss,*.scm,*.rb,*.html,*.erb,*.js,*.css,*.cl,*.lsp,*.lisp,*.yml,*.sh,*.bash,*.yaml set tabstop=4 softtabstop=0 shiftwidth=2
 augroup end
 
 "" Return to last edit position when opening files.
@@ -163,7 +165,12 @@ augroup __buffer
     autocmd FileType * if &buftype!='' | nnoremap <buffer><silent> q <esc>:bd<cr> | endif
 augroup end
 
-" Let's.
+"" Fuzzy!
+augroup __fuzzy
+    au!
+augroup end
+
+" Let(s).
 "" Leader of all.
 let mapleader = ' '
 
