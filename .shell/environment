@@ -1,9 +1,13 @@
 # !/usr/bin/env bash
 # Email: <mvdw at airmail dot cc>
 
+export TILLER_NAMESPACE=tiller
+
 # Export the user created function names.
 # shellcheck disable=SC2155
 export BASH_FUNCTION_NAMES=$(declare -F | awk '{if (substr($3, 0, 1) != "_") print $3}')
+
+export CLOUDSDK_PYTHON=/usr/local/opt/asdf/shims/python2.7
 
 # Display the prompt.
 export PS1='$(tput setaf 4)$(sed "s/~/${HOME//\//\\\/}/g" <<< "\w") [\h] ─── \[$(tput sgr0)\]'
@@ -12,12 +16,18 @@ export PS3='\ '
 export PS4='+($?) $BASH_SOURCE:$FUNCNAME:$LINENO:' bash -lixc : 2> >(grep alias)
 
 # A set of commonly used applications saved under their selector name.
-export BROWSER='firefox'
+# export BROWSER='firefox'
 export EDITOR='vim'
 export LANG='en_GB.UTF-8'
 
 # PATH.
+# This path needs priority.
+export PATH=$HOME/Development/elixir/src/elixir/bin:$PATH
+export PATH=$HOME/Development/elixir/src/jdk-11.0.1.jdk/Contents/Home/bin/:$PATH
+export PATH=/Users/mvdw/Library/Python/3.7/bin:$PATH
 export PATH=$PATH:$HOME/tck/bin
+export PATH=$PATH:$HOME/DevOps/bin/
+export PATH=$PATH:$HOME/DevOps/etc/GoogleCloudSDK/bin
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/local/sbin/
 export PATH=$PATH:/usr/local/opt/node@8/bin
@@ -26,3 +36,5 @@ export PATH=$PATH:/usr/local/opt/imagemagick@6/bin
 # Other.
 export ERL_AFLAGS="-kernel shell_history enabled"
 export DYLD_LIBRARY_PATH=/usr/usr/local/opt/mysql@5.6/lib:$DYLD_LIBRARY_PATH
+export PKG_CONFIG_PATH=/usr/local/Cellar/imagemagick@6/6.9.9-40/lib/pkgconfig
+

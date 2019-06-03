@@ -153,3 +153,8 @@ ix() {
 d() {
     diff -BEby "$1" "$2" | nl | pr | less
 }
+
+choose-prae() {
+  prae list | choose
+}
+
